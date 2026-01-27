@@ -1,54 +1,36 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven-3'
-    }
-
-    environment {
-        MAVEN_HOME = tool 'Maven-3'
-        PATH = "${env.MAVEN_HOME}/bin;${env.PATH}"
-    }
-
     stages {
 
         stage('Build & Test - Main') {
-            when {
-                branch 'main'
-            }
+            when { branch 'main' }
             steps {
                 echo 'Running full CI pipeline for MAIN branch'
-                bat 'mvn.cmd clean package'
+                bat '"C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.tasks.Maven_MavenInstallation\\Maven-3\\bin\\mvn.cmd" clean package'
             }
         }
 
         stage('Test Only - Feature Branch') {
-            when {
-                branch 'feature/login'
-            }
+            when { branch 'feature/login' }
             steps {
                 echo 'Running tests only for FEATURE branch'
-                bat 'mvn.cmd test'
+                bat '"C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.tasks.Maven_MavenInstallation\\Maven-3\\bin\\mvn.cmd" test'
             }
         }
 
         stage('Test & Security Scan - Release Branch') {
-            when {
-                branch 'release/v1.0'
-            }
+            when { branch 'release/v1.0' }
             steps {
                 echo 'Running tests and security scan for RELEASE branch'
-                bat 'mvn.cmd test'
+                bat '"C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.tasks.Maven_MavenInstallation\\Maven-3\\bin\\mvn.cmd" test'
+                echo 'Security scan simulated'
             }
         }
     }
 
     post {
-        success {
-            echo 'Build successful'
-        }
-        failure {
-            echo 'Build failed'
-        }
+        success { echo 'Build successful' }
+        failure { echo 'Build failed' }
     }
 }
