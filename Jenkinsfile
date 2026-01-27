@@ -5,14 +5,20 @@ pipeline {
         maven 'Maven-3'
     }
 
+    environment {
+        MAVEN_HOME = tool 'Maven-3'
+        PATH = "${env.MAVEN_HOME}/bin;${env.PATH}"
+    }
+
     stages {
+
         stage('Build & Test - Main') {
             when {
                 branch 'main'
             }
             steps {
                 echo 'Running full CI pipeline for MAIN branch'
-                bat 'mvn clean package'
+                bat 'mvn.cmd clean package'
             }
         }
 
@@ -22,7 +28,7 @@ pipeline {
             }
             steps {
                 echo 'Running tests only for FEATURE branch'
-                bat 'mvn test'
+                bat 'mvn.cmd test'
             }
         }
 
@@ -32,7 +38,7 @@ pipeline {
             }
             steps {
                 echo 'Running tests and security scan for RELEASE branch'
-                bat 'mvn test'
+                bat 'mvn.cmd test'
             }
         }
     }
