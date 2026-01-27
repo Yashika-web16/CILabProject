@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven-3'
+    }
+
     environment {
         JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
         PATH = "${JAVA_HOME}\\bin;${env.PATH}"
@@ -31,7 +35,6 @@ pipeline {
             }
             steps {
                 echo 'Running tests only for FEATURE branch'
-                bat 'java -version'
                 bat 'mvn test'
             }
         }
@@ -42,7 +45,6 @@ pipeline {
             }
             steps {
                 echo 'Running tests and security scan for RELEASE branch'
-                bat 'java -version'
                 bat 'mvn test'
                 echo 'Security scan simulated'
             }
