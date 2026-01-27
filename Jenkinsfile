@@ -1,61 +1,43 @@
 pipeline {
     agent any
 
-    environment {
-        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
-        PATH = "${JAVA_HOME}\\bin;${env.PATH}"
+    tools {
+        maven 'Maven-3'
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build & Test - Main') {
             when {
                 branch 'main'
             }
             steps {
                 echo 'Running full CI pipeline for MAIN branch'
-                withMaven(maven: 'Maven-3') {
-                    bat 'mvn clean package'
-                }
+                bat 'mvn clean package'
             }
         }
 
         stage('Test Only - Feature Branch') {
             when {
-                expression { env.BRANCH_NAME.startsWith("feature") }
+                branch 'feature/login'
             }
             steps {
                 echo 'Running tests only for FEATURE branch'
-                withMaven(maven: 'Maven-3') {
-                    bat 'mvn test'
-                }
+                bat 'mvn test'
             }
         }
 
         stage('Test & Security Scan - Release Branch') {
             when {
-                expression { env.BRANCH_NAME.startsWith("release") }
+                branch 'release/v1.0'
             }
             steps {
                 echo 'Running tests and security scan for RELEASE branch'
-                withMaven(maven: 'Maven-3') {
-                    bat 'mvn test'
-                }
-                echo 'Security scan simulated'
+                bat 'mvn test'
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline completed'
-        }
         success {
             echo 'Build successful'
         }
