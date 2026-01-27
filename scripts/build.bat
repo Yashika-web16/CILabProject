@@ -1,0 +1,3 @@
+@echo off
+echo Building CI Lab Project...
+mvn clean package
