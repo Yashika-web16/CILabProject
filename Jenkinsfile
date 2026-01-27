@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven-3'
-    }
-
     environment {
         JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
         PATH = "${JAVA_HOME}\\bin;${env.PATH}"
@@ -24,28 +20,33 @@ pipeline {
             }
             steps {
                 echo 'Running full CI pipeline for MAIN branch'
-                bat 'java -version'
-                bat 'mvn clean package'
+                withMaven(maven: 'Maven-3') {
+                    bat 'mvn clean package'
+                }
             }
         }
 
         stage('Test Only - Feature Branch') {
             when {
-                expression { env.BRANCH_NAME.startsWith('feature') }
+                expression { env.BRANCH_NAME.startsWith("feature") }
             }
             steps {
                 echo 'Running tests only for FEATURE branch'
-                bat 'mvn test'
+                withMaven(maven: 'Maven-3') {
+                    bat 'mvn test'
+                }
             }
         }
 
         stage('Test & Security Scan - Release Branch') {
             when {
-                expression { env.BRANCH_NAME.startsWith('release') }
+                expression { env.BRANCH_NAME.startsWith("release") }
             }
             steps {
                 echo 'Running tests and security scan for RELEASE branch'
-                bat 'mvn test'
+                withMaven(maven: 'Maven-3') {
+                    bat 'mvn test'
+                }
                 echo 'Security scan simulated'
             }
         }
